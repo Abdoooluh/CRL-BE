@@ -52,7 +52,7 @@ retailerRouter.get("/get", async (req, res) => {
   });
 
 retailerRouter.post("/createRetailer", async (req, res) => {
-  const retailerData = req.body; // Assuming you send retailer data in the request body
+  const retailerData = req.body; 
 
   try {
     const newRetailer = await RetailerAPIFunctions.createRetailer(retailerData);
