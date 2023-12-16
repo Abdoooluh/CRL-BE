@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const axios = require("axios");
 const retailerAPIs = require('./apiRoutes/retailerRoutes')
+const sellerAPIs = require('./apiRoutes/sellerRoutes')
 
 const BASE_URL = "http://localhost/3000";
 const APIinfo = [];
@@ -9,9 +10,10 @@ const APIinfo = [];
 const app = express();
 app.use(express.json());
 app.use("/retailers", retailerAPIs.router);
-
+app.use("/sellers", sellerAPIs.router)
 
 APIinfo.push(retailerAPIs.info);
+APIinfo.push(sellerAPIs.info);
 
 app.listen(3000);
 

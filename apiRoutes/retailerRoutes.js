@@ -150,5 +150,5 @@ const RetailerAPIFunctions = {
     }
   },
 };
-retailerAPIs = { info: information, router: retailerRouter };
+const retailerAPIs = { info: information, router: retailerRouter };
 module.exports = retailerAPIs;
