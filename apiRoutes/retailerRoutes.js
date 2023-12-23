@@ -1,72 +1,71 @@
-const Retailer = require("../models/retailers");
 const express = require("express");
-const retailerRouter = express.Router();
+const asyncHandler = require("express-async-handler");
+const Retailer = require("../models/retailers");
 
 const information = {
   retailers: [
     {
-      route: "retailer/get",
+      route: "[GET] retailers/get",
       desc: "get all retailers",
     },
     {
-      route: "retailer/get/:id",
-      desc: "get specific retailer by id",
+      route: "[GET] retailers/get/:id",
+      desc: "get specific retailer by ID",
     },
     {
-      route: "retailer/createRetailer",
+      route: "[POST] retailers/createRetailer",
       desc: "create a new retailer",
     },
     {
-      route: "retailer/updateRetailer/:id",
+      route: "[PUT] retailers/updateRetailer/:id",
       desc: "update a retailer by ID",
     },
     {
-      route: "reatailer/deleteRetailer/:id",
-      desc: "delete a retailer by id",
+      route: "[DELETE] retailers/deleteRetailer/:id",
+      desc: "delete a retailer by ID",
     },
   ],
 };
 
-retailerRouter.get("/get", async (req, res) => {
-  try {
+const retailerRouter = express.Router();
+
+retailerRouter.get(
+  "/get",
+  asyncHandler(async (req, res) => {
     const retailers = await RetailerAPIFunctions.getAllRetailers();
     res.json(retailers);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}),
-  retailerRouter.get("/get/:id", async (req, res) => {
+  })
+);
+
+retailerRouter.get(
+  "/get/:id",
+  asyncHandler(async (req, res) => {
     const retailerId = req.params.id;
+    const retailer = await RetailerAPIFunctions.getRetailerById(retailerId);
 
-    try {
-      const retailer = await RetailerAPIFunctions.getRetailerById(retailerId);
-
-      if (!retailer) {
-        return res.status(404).json({ error: "Retailer not found" });
-      }
-
-      res.json(retailer);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
+    if (!retailer) {
+      return res.status(404).json({ error: "Retailer not found" });
     }
-  });
 
-retailerRouter.post("/createRetailer", async (req, res) => {
-  const retailerData = req.body; 
+    res.json(retailer);
+  })
+);
 
-  try {
+retailerRouter.post(
+  "/createRetailer",
+  asyncHandler(async (req, res) => {
+    console.log(req.body); 
+    const retailerData = req.body;
     const newRetailer = await RetailerAPIFunctions.createRetailer(retailerData);
     res.json(newRetailer);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  })
+);
 
-retailerRouter.put("/updateRetailer/:id", async (req, res) => {
-  const retailerId = req.params.id;
-  const retailerData = req.body;
-
-  try {
+retailerRouter.put(
+  "/updateRetailer/:id",
+  asyncHandler(async (req, res) => {
+    const retailerId = req.params.id;
+    const retailerData = req.body;
     const updatedRetailer = await RetailerAPIFunctions.updateRetailer(
       retailerId,
       retailerData
@@ -77,15 +76,13 @@ retailerRouter.put("/updateRetailer/:id", async (req, res) => {
     }
 
     res.json(updatedRetailer);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  })
+);
 
-retailerRouter.delete("/deleteRetailer/:id", async (req, res) => {
-  const retailerId = req.params.id;
-
-  try {
+retailerRouter.delete(
+  "/deleteRetailer/:id",
+  asyncHandler(async (req, res) => {
+    const retailerId = req.params.id;
     const deletedRetailer = await RetailerAPIFunctions.deleteRetailer(
       retailerId
     );
@@ -95,60 +92,39 @@ retailerRouter.delete("/deleteRetailer/:id", async (req, res) => {
     }
 
     res.json(deletedRetailer);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  })
+);
 
 const RetailerAPIFunctions = {
   getAllRetailers: async () => {
-    try {
-      const retailers = await Retailer.find();
-      return retailers;
-    } catch (error) {
-      throw error;
-    }
+    const retailers = await Retailer.find();
+    return retailers;
   },
 
   getRetailerById: async (retailerId) => {
-    try {
-      const retailer = await Retailer.findById(retailerId);
-      return retailer;
-    } catch (error) {
-      throw error;
-    }
+    const retailer = await Retailer.findById(retailerId);
+    return retailer;
   },
 
   createRetailer: async (retailerData) => {
-    try {
-      const newRetailer = await Retailer.create(retailerData);
-      return newRetailer;
-    } catch (error) {
-      throw error;
-    }
+    const newRetailer = await Retailer.create(retailerData);
+    return newRetailer;
   },
 
   updateRetailer: async (retailerId, retailerData) => {
-    try {
-      const updatedRetailer = await Retailer.findByIdAndUpdate(
-        retailerId,
-        retailerData,
-        { new: true }
-      );
-      return updatedRetailer;
-    } catch (error) {
-      throw error;
-    }
+    const updatedRetailer = await Retailer.findByIdAndUpdate(
+      retailerId,
+      retailerData,
+      { new: true }
+    );
+    return updatedRetailer;
   },
 
   deleteRetailer: async (retailerId) => {
-    try {
-      const deletedRetailer = await Retailer.findByIdAndRemove(retailerId);
-      return deletedRetailer;
-    } catch (error) {
-      throw error;
-    }
+    const deletedRetailer = await Retailer.findByIdAndDelete(retailerId);
+    return deletedRetailer;
   },
 };
+
 const retailerAPIs = { info: information, router: retailerRouter };
 module.exports = retailerAPIs;

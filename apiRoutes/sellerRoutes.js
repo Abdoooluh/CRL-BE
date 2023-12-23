@@ -1,45 +1,66 @@
-const Wholeseller = require("../models/sellers");
 const express = require("express");
-const sellerRouter = express.Router();
+const asyncHandler = require("express-async-handler");
+const Wholeseller = require("../models/sellers");
 
 const information = {
   sellers: [
     {
-      route: "seller/get",
+      route: "[GET] sellers/get",
       desc: "get all sellers",
     },
     {
-      route: "seller/get/:id",
-      desc: "get specific seller by id",
+      route: "[GET] sellers/get/:id",
+      desc: "get specific seller by ID",
     },
     {
-      route: "seller/createSeller",
+      route: "[POST] sellers/createSeller",
       desc: "create a new seller",
     },
     {
-      route: "seller/updateSeller/:id",
+      route: "[PUT] sellers/updateSeller/:id",
       desc: "update a seller by ID",
     },
     {
-      route: "seller/deleteSeller/:id",
-      desc: "delete a seller by id",
+      route: "[DELETE] sellers/deleteSeller/:id",
+      desc: "delete a seller by ID",
+    },
+    {
+      route: "[GET] sellers/listings/get/:sellerId",
+      desc: "get all listings for a specific seller",
+    },
+    {
+      route: "[GET] sellers/listings/get/:sellerId/:listingId",
+      desc: "get a specific listing for a specific seller",
+    },
+    {
+      route: "[POST] sellers/listings/create/:sellerId",
+      desc: "create a new listing for a specific seller",
+    },
+    {
+      route: "[PUT] sellers/listings/update/:sellerId/:listingId",
+      desc: "update a specific listing for a specific seller",
+    },
+    {
+      route: "[DELETE] sellers/listings/delete/:sellerId/:listingId",
+      desc: "delete a specific listing for a specific seller",
     },
   ],
 };
 
-sellerRouter.get("/get", async (req, res) => {
-  try {
+const sellerRouter = express.Router();
+
+sellerRouter.get(
+  "/get",
+  asyncHandler(async (req, res) => {
     const sellers = await SellerAPIFunctions.getAllSellers();
     res.json(sellers);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  })
+);
 
-sellerRouter.get("/get/:id", async (req, res) => {
-  const sellerId = req.params.id;
-
-  try {
+sellerRouter.get(
+  "/get/:id",
+  asyncHandler(async (req, res) => {
+    const sellerId = req.params.id;
     const seller = await SellerAPIFunctions.getSellerById(sellerId);
 
     if (!seller) {
@@ -47,27 +68,23 @@ sellerRouter.get("/get/:id", async (req, res) => {
     }
 
     res.json(seller);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  })
+);
 
-sellerRouter.post("/createSeller", async (req, res) => {
-  const sellerData = req.body;
-
-  try {
+sellerRouter.post(
+  "/createSeller",
+  asyncHandler(async (req, res) => {
+    const sellerData = req.body;
     const newSeller = await SellerAPIFunctions.createSeller(sellerData);
     res.json(newSeller);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  })
+);
 
-sellerRouter.put("/updateSeller/:id", async (req, res) => {
-  const sellerId = req.params.id;
-  const sellerData = req.body;
-
-  try {
+sellerRouter.put(
+  "/updateSeller/:id",
+  asyncHandler(async (req, res) => {
+    const sellerId = req.params.id;
+    const sellerData = req.body;
     const updatedSeller = await SellerAPIFunctions.updateSeller(
       sellerId,
       sellerData
@@ -78,15 +95,13 @@ sellerRouter.put("/updateSeller/:id", async (req, res) => {
     }
 
     res.json(updatedSeller);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  })
+);
 
-sellerRouter.delete("/deleteSeller/:id", async (req, res) => {
-  const sellerId = req.params.id;
-
-  try {
+sellerRouter.delete(
+  "/deleteSeller/:id",
+  asyncHandler(async (req, res) => {
+    const sellerId = req.params.id;
     const deletedSeller = await SellerAPIFunctions.deleteSeller(sellerId);
 
     if (!deletedSeller) {
@@ -94,61 +109,156 @@ sellerRouter.delete("/deleteSeller/:id", async (req, res) => {
     }
 
     res.json(deletedSeller);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  })
+);
+
+sellerRouter.get(
+  "/listings/get/:sellerId",
+  asyncHandler(async (req, res) => {
+    const sellerId = req.params.sellerId;
+    const listings = await SellerListingFunctions.getAllListings(sellerId);
+    res.json(listings);
+  })
+);
+
+sellerRouter.get(
+  "/listings/get/:sellerId/:listingId",
+  asyncHandler(async (req, res) => {
+    const { sellerId, listingId } = req.params;
+    const listing = await SellerListingFunctions.getListingById(
+      sellerId,
+      listingId
+    );
+    res.json(listing);
+  })
+);
+
+sellerRouter.post(
+  "/listings/create/:sellerId",
+  asyncHandler(async (req, res) => {
+    const sellerId = req.params.sellerId;
+    const listingData = req.body;
+    const newListing = await SellerListingFunctions.createListing(
+      sellerId,
+      listingData
+    );
+    res.json(newListing);
+  })
+);
+
+sellerRouter.put(
+  "/listings/update/:sellerId/:listingId",
+  asyncHandler(async (req, res) => {
+    const { sellerId, listingId } = req.params;
+    const listingData = req.body;
+    const updatedListing = await SellerListingFunctions.updateListing(
+      sellerId,
+      listingId,
+      listingData
+    );
+    res.json(updatedListing);
+  })
+);
+
+sellerRouter.delete(
+  "/listings/delete/:sellerId/:listingId",
+  asyncHandler(async (req, res) => {
+    const { sellerId, listingId } = req.params;
+    const deletedListing = await SellerListingFunctions.deleteListing(
+      sellerId,
+      listingId
+    );
+    res.json(deletedListing);
+  })
+);
 
 const SellerAPIFunctions = {
   getAllSellers: async () => {
-    try {
-      const sellers = await Wholeseller.find();
-      return sellers;
-    } catch (error) {
-      throw error;
-    }
+    const sellers = await Wholeseller.find();
+    return sellers;
   },
 
   getSellerById: async (sellerId) => {
-    try {
-      const seller = await Wholeseller.findById(sellerId);
-      return seller;
-    } catch (error) {
-      throw error;
-    }
+    const seller = await Wholeseller.findById(sellerId);
+    return seller;
   },
 
   createSeller: async (sellerData) => {
-    try {
-      const newSeller = await Wholeseller.create(sellerData);
-      return newSeller;
-    } catch (error) {
-      throw error;
-    }
+    const newSeller = await Wholeseller.create(sellerData);
+    return newSeller;
   },
 
   updateSeller: async (sellerId, sellerData) => {
-    try {
-      const updatedSeller = await Wholeseller.findByIdAndUpdate(
-        sellerId,
-        sellerData,
-        { new: true }
-      );
-      return updatedSeller;
-    } catch (error) {
-      throw error;
-    }
+    const updatedSeller = await Wholeseller.findByIdAndUpdate(
+      sellerId,
+      sellerData,
+      { new: true }
+    );
+    return updatedSeller;
   },
 
   deleteSeller: async (sellerId) => {
-    try {
-      const deletedSeller = await Wholeseller.findByIdAndRemove(sellerId);
-      return deletedSeller;
-    } catch (error) {
-      throw error;
-    }
+    const deletedSeller = await Wholeseller.findByIdAndDelete(sellerId);
+    return deletedSeller;
   },
 };
+
+const SellerListingFunctions = {
+  getAllListings: async (sellerId) => {
+    const seller = await Wholeseller.findById(sellerId);
+    if (!seller) throw new Error("Seller not found");
+
+    return seller.listings;
+  },
+
+  getListingById: async (sellerId, listingId) => {
+    const seller = await Wholeseller.findById(sellerId);
+    if (!seller) throw new Error("Seller not found");
+
+    const listing = seller.listings.id(listingId);
+    if (!listing) throw new Error("Listing not found");
+
+    return listing;
+  },
+
+  createListing: async (sellerId, listingData) => {
+    const seller = await Wholeseller.findById(sellerId);
+    if (!seller) throw new Error("Seller not found");
+
+    const newListing = new Listings(listingData);
+    seller.listings.push(newListing);
+    await seller.save();
+
+    return newListing;
+  },
+
+  updateListing: async (sellerId, listingId, listingData) => {
+    const seller = await Wholeseller.findById(sellerId);
+    if (!seller) throw new Error("Seller not found");
+
+    const listing = seller.listings.id(listingId);
+    if (!listing) throw new Error("Listing not found");
+
+    Object.assign(listing, listingData);
+    await seller.save();
+
+    return listing;
+  },
+
+  deleteListing: async (sellerId, listingId) => {
+    const seller = await Wholeseller.findById(sellerId);
+    if (!seller) throw new Error("Seller not found");
+
+    const listing = seller.listings.id(listingId);
+    if (!listing) throw new Error("Listing not found");
+
+    listing.remove();
+    await seller.save();
+
+    return listing;
+  },
+};
+
 
 const sellerAPIs = { info: information, router: sellerRouter };
 module.exports = sellerAPIs;
