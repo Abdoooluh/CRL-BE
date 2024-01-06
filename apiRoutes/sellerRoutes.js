@@ -5,6 +5,14 @@ const Wholeseller = require("../models/sellers");
 const information = {
   sellers: [
     {
+      route: "sellers/signIn [POST]",
+      desc: "sign in as a seller",
+    },
+    {
+      route: "sellers/signUp [POST]",
+      desc: "Sign up as a seller",
+    },
+    {
       route: "sellers/get [GET]",
       desc: "get all sellers",
     },
@@ -48,6 +56,24 @@ const information = {
 };
 
 const sellerRouter = express.Router();
+
+sellerRouter.post(
+  "/signup",
+  asyncHandler(async (req, res) => {
+    const sellerData = req.body;
+    const sellers = await SellerAPIFunctions.createSeller(sellerData);
+    res.json(sellers);
+  })
+);
+
+sellerRouter.post(
+  "/signin",
+  asyncHandler(async (req, res) => {
+    const sellerData = req.body;
+    const sellers = await SellerAPIFunctions.signIn(sellerData.email, sellerData.password);
+    res.json(sellers);
+  })
+);
 
 sellerRouter.get(
   "/get",
@@ -173,6 +199,15 @@ sellerRouter.delete(
 );
 
 const SellerAPIFunctions = {
+  signIn: async (sellerEmail, sellerPassword) => {
+    const seller = await Wholeseller.findOne(sellerEmail);
+    if (seller.password !== sellerPassword) {
+      return res.status(401).json({ error: "Incorrect password" });
+    } else {
+      return seller;
+    }
+  },
+
   getAllSellers: async () => {
     const sellers = await Wholeseller.find();
     return sellers;
@@ -258,7 +293,6 @@ const SellerListingFunctions = {
     return listing;
   },
 };
-
 
 const sellerAPIs = { info: information, router: sellerRouter };
 module.exports = sellerAPIs;
