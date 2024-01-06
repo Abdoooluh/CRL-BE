@@ -199,9 +199,10 @@ sellerRouter.delete(
 );
 
 const SellerAPIFunctions = {
-  signIn: async (sellerEmail, sellerPassword) => {
-    const seller = await Wholeseller.findOne(sellerEmail);
-    if (seller.password !== sellerPassword) {
+  signIn: async (email, password) => {
+    const seller = await Wholeseller.findOne({password});
+    console.log(seller);
+    if (seller.password !== password) {
       return res.status(401).json({ error: "Incorrect password" });
     } else {
       return seller;
