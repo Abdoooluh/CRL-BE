@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const imageSchema = require("./images")
 
 const listingSchema = mongoose.Schema({
   productName: {
@@ -10,22 +11,11 @@ const listingSchema = mongoose.Schema({
     type: Number,
     required: [true, "Please enter a price"]
   },
-  quantityAvailable: {
-    type: Number,
-    required: [true, "Please enter the available quantity of this product"]
-  },
   minimumOrderQuantity: {
     type: Number,
     required: [true, "Please enter minimum order quantity for this product"]
   },
-  deliveryTime: {
-    type: String,
-    required: [true, "Please enter estimated delivery time for this prodcut"]
-  },
-  returnPolicy: {
-    type: String,
-    default: "No Returns"
-  }
+  images: [imageSchema], // Array of images
 });
 
 const Listings = mongoose.model("Listing", listingSchema);

@@ -2,10 +2,6 @@ const Listings = require("./listings");
 const mongoose = require("mongoose");
 
 const wholesellerSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please enter your name"],
-  },
   email: {
     type: String,
     required: true,
@@ -16,11 +12,7 @@ const wholesellerSchema = mongoose.Schema({
     required: true,
     minlength: 8,
   },
-  cnic: {
-    type: String,
-    required: [true, "Please enter your CNIC"],
-  },
-  ntn: {
+  NTN: {
     type: String,
     required: [true, "Please enter your NTN"],
   },
@@ -33,17 +25,9 @@ const wholesellerSchema = mongoose.Schema({
     type: String, 
     required: true 
   },
-  city: {
-    type: String,
-    required: [true, "Please enter the name of your city"],
-  },
   platformJoiningDate: {
     type: Date,
     default: Date.now,
-  },
-  creditScore: {
-    type: Number,
-    default: 0,
   },
   totalListings: {
     type: Number,

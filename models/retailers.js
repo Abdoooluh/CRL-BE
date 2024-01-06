@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const retailerSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please enter your name"]
-  },
   email: {
     type: String,
     required: true,
@@ -23,17 +19,18 @@ const retailerSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter your NTN"]
   },
-  city: {
-    type: String,
-    required: [true, "Please enter the name of your city"]
+  businessPhone: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  businessAddress: { 
+    type: String, 
+    required: true 
   },
   platformJoiningDate: {
     type: Date,
     default: Date.now
-  },
-  businessStartYear: {
-    type: Number,
-    required: [true, "Please enter the year when your business was established"]
   },
   creditScore: {
     type: Number,
