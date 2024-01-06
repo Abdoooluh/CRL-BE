@@ -61,8 +61,13 @@ sellerRouter.post(
   "/signup",
   asyncHandler(async (req, res) => {
     const sellerData = req.body;
-    const sellers = await SellerAPIFunctions.createSeller(sellerData);
-    res.json(sellers);
+    const seller = await SellerAPIFunctions.createSeller(sellerData);
+    if(!seller){
+      res.status(404).json({error:"User Not Registered"})
+    }
+    else{
+      res.status(200).json(seller)
+    }
   })
 );
 
@@ -70,8 +75,14 @@ sellerRouter.post(
   "/signin",
   asyncHandler(async (req, res) => {
     const sellerData = req.body;
-    const sellers = await SellerAPIFunctions.signIn(sellerData.email, sellerData.password);
-    res.json(sellers);
+    const seller = await SellerAPIFunctions.signIn(sellerData.email);
+    if(!seller){
+      res.status(404).json({error:"The User doesn't exist"})
+    }
+    else if(seller.password !== sellerData.password){
+      res.status(401).json({error:"The Username and the Password do not match"})
+    }
+    res.status(200).json(seller);
   })
 );
 
@@ -199,14 +210,9 @@ sellerRouter.delete(
 );
 
 const SellerAPIFunctions = {
-  signIn: async (email, password) => {
-    const seller = await Wholeseller.findOne({password});
-    console.log(seller);
-    if (seller.password !== password) {
-      return res.status(401).json({ error: "Incorrect password" });
-    } else {
-      return seller;
-    }
+  signIn: async (email) => {
+    const seller = await Wholeseller.findOne({email});
+    return seller;
   },
 
   getAllSellers: async () => {
