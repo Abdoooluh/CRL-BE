@@ -5,6 +5,14 @@ const Retailer = require("../models/retailers");
 const information = {
   retailers: [
     {
+      route: "retailers/signIn [POST]",
+      desc: "Sign in as a retailer",
+    },
+    {
+      route: "retailers/signUp [POST]",
+      desc: "Sign up as a retailer",
+    },
+    {
       route: "retailers/get [GET]",
       desc: "get all retailers",
     },
@@ -28,6 +36,36 @@ const information = {
 };
 
 const retailerRouter = express.Router();
+
+retailerRouter.post(
+  "/signUp",
+  asyncHandler(async (req, res) => {
+    const retailerData = req.body;
+    const retailer = await RetailerAPIFunctions.createRetailer(retailerData);
+    if(!retailer){
+      res.status(404).json({error:"User Not Registered"})
+    }
+    else{
+      res.status(200).json(retailer)
+    }
+  })
+);
+
+retailerRouter.post(
+  "/signIn",
+  asyncHandler(async (req, res) => {
+    const retailerData = req.body;
+    const retailer = await RetailerAPIFunctions.signIn(retailerData.email);
+    console.log(retailer)
+    if(!retailer){
+      res.status(404).json({error:"The User doesn't exist"})
+    }
+    else if(retailer.password !== retailerData.password){
+      res.status(401).json({error:"The Username and the Password do not match"})
+    }
+    res.status(200).json(retailer);
+  })
+);
 
 retailerRouter.get(
   "/get",
@@ -96,6 +134,11 @@ retailerRouter.delete(
 );
 
 const RetailerAPIFunctions = {
+  signIn:  async (email) => {
+    const seller = await Retailer.findOne({email});
+    return seller;
+  },
+
   getAllRetailers: async () => {
     const retailers = await Retailer.find();
     return retailers;

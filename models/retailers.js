@@ -11,11 +11,7 @@ const retailerSchema = mongoose.Schema({
     required: true,
     minlength: 8,
   },
-  cnic: {
-    type: String,
-    required: [true, "Please enter your CNIC"]
-  },
-  ntn: {
+  NTN: {
     type: String,
     required: [true, "Please enter your NTN"]
   },

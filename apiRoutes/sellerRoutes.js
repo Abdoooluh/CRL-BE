@@ -6,7 +6,7 @@ const information = {
   sellers: [
     {
       route: "sellers/signIn [POST]",
-      desc: "sign in as a seller",
+      desc: "Sign in as a seller",
     },
     {
       route: "sellers/signUp [POST]",
@@ -58,7 +58,7 @@ const information = {
 const sellerRouter = express.Router();
 
 sellerRouter.post(
-  "/signup",
+  "/signUp",
   asyncHandler(async (req, res) => {
     const sellerData = req.body;
     const seller = await SellerAPIFunctions.createSeller(sellerData);
@@ -72,7 +72,7 @@ sellerRouter.post(
 );
 
 sellerRouter.post(
-  "/signin",
+  "/signIn",
   asyncHandler(async (req, res) => {
     const sellerData = req.body;
     const seller = await SellerAPIFunctions.signIn(sellerData.email);
