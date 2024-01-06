@@ -5,23 +5,23 @@ const Retailer = require("../models/retailers");
 const information = {
   retailers: [
     {
-      route: "[GET] retailers/get",
+      route: "retailers/get [GET]",
       desc: "get all retailers",
     },
     {
-      route: "[GET] retailers/get/:id",
+      route: "retailers/get/:id [GET]",
       desc: "get specific retailer by ID",
     },
     {
-      route: "[POST] retailers/createRetailer",
+      route: "retailers/createRetailer [POST]",
       desc: "create a new retailer",
     },
     {
-      route: "[PUT] retailers/updateRetailer/:id",
+      route: "retailers/updateRetailer/:id [PUT]",
       desc: "update a retailer by ID",
     },
     {
-      route: "[DELETE] retailers/deleteRetailer/:id",
+      route: "retailers/deleteRetailer/:id [DELETE]",
       desc: "delete a retailer by ID",
     },
   ],

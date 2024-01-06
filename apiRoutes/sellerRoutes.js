@@ -5,43 +5,43 @@ const Wholeseller = require("../models/sellers");
 const information = {
   sellers: [
     {
-      route: "[GET] sellers/get",
+      route: "sellers/get [GET]",
       desc: "get all sellers",
     },
     {
-      route: "[GET] sellers/get/:id",
+      route: "sellers/get/:id [GET]",
       desc: "get specific seller by ID",
     },
     {
-      route: "[POST] sellers/createSeller",
+      route: "sellers/createSeller [POST]",
       desc: "create a new seller",
     },
     {
-      route: "[PUT] sellers/updateSeller/:id",
+      route: "sellers/updateSeller/:id [PUT]",
       desc: "update a seller by ID",
     },
     {
-      route: "[DELETE] sellers/deleteSeller/:id",
+      route: "sellers/deleteSeller/:id [DELETE]",
       desc: "delete a seller by ID",
     },
     {
-      route: "[GET] sellers/listings/get/:sellerId",
+      route: "sellers/listings/get/:sellerId [GET]",
       desc: "get all listings for a specific seller",
     },
     {
-      route: "[GET] sellers/listings/get/:sellerId/:listingId",
+      route: "sellers/listings/get/:sellerId/:listingId [GET]",
       desc: "get a specific listing for a specific seller",
     },
     {
-      route: "[POST] sellers/listings/create/:sellerId",
+      route: "sellers/listings/create/:sellerId [POST]",
       desc: "create a new listing for a specific seller",
     },
     {
-      route: "[PUT] sellers/listings/update/:sellerId/:listingId",
+      route: "sellers/listings/update/:sellerId/:listingId [PUT]",
       desc: "update a specific listing for a specific seller",
     },
     {
-      route: "[DELETE] sellers/listings/delete/:sellerId/:listingId",
+      route: "sellers/listings/delete/:sellerId/:listingId [DELETE]",
       desc: "delete a specific listing for a specific seller",
     },
   ],

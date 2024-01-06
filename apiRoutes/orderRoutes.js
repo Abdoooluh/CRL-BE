@@ -5,35 +5,35 @@ const Order = require("../models/orders");
 const information = {
     orders: [
       {
-        route: "[GET] orders/get",
+        route: "orders/get [GET] ",
         desc: "get all orders",
       },
       {
-        route: "[GET] orders/get/:id",
+        route: "orders/get/:id [GET] ",
         desc: "get specific order by id",
       },
       {
-        route: "[POST] orders/createOrder",
+        route: "orders/createOrder [POST]",
         desc: "create a new order",
       },
       {
-        route: "[PUT] orders/updateOrder/:id",
+        route: "orders/updateOrder/:id [PUT]",
         desc: "update an order by ID",
       },
       {
-        route: "[DELETE] orders/deleteOrder/:id",
+        route: "orders/deleteOrder/:id [DELETE]",
         desc: "delete an order by id",
       },
       {
-        route: "[GET] orders/getBySeller/:sellerId",
+        route: "orders/getBySeller/:sellerId [GET]",
         desc: "get orders by seller ID",
       },
       {
-        route: "[GET] orders/getByRetailer/:retailerId",
+        route: "orders/getByRetailer/:retailerId [GET]",
         desc: "get orders by retailer ID",
       },
       {
-        route: "[GET] orders/getByListing/:listingId",
+        route: "orders/getByListing/:listingId [GET]",
         desc: "get orders by listing ID",
       },
     ],
