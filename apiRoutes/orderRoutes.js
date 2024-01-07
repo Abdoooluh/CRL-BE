@@ -152,12 +152,14 @@ const OrderAPIFunctions = {
   },
 
   getOrdersBySellerId:async(sellerId)=>{
-    return await Order.find({sellerId})
+    return await Order.find({seller:sellerId})
   },
   
   getOrdersByRetailerId:async(retailerId)=>{
-    return await Order.find({retailerId})
-
+    return await Order.find({retailer:retailerId})
+  },
+  getOrdersByListingId:async(listingId) =>{
+    return await Order.findById(listingId)
   }
 };
 

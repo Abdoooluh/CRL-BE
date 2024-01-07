@@ -19,8 +19,7 @@ const orderSchema = mongoose.Schema({
   },
   retailerContact:{
     type: String, 
-    required: true, 
-    unique: true
+    required: true
   },
   seller: {
     type: mongoose.Schema.Types.ObjectId,
@@ -67,15 +66,12 @@ const orderSchema = mongoose.Schema({
 });
 
 
-orderSchema.pre('save', function (next) {
-  var doc = this;
-  Order.countDocuments({}, function (err, count) {
-    if (err) {
-      return next(err);
-    }
-    doc.orderNumber = count + 1;
-    next();
-  });
+orderSchema.pre('validate', async function (next) {
+  if (this.isNew) {
+    const count = await mongoose.model('Order').countDocuments();
+    this.orderNumber = count + 1;
+  }
+  next();
 });
 
 const Order = mongoose.model("Order", orderSchema);
