@@ -240,6 +240,12 @@ const SellerAPIFunctions = {
     return seller;
   },
 
+  searchSellersByBusinessName: async (partialName) => {
+    return await Wholeseller.find({
+      businessName: { $regex: partialName, $options: "i" },
+    });
+  },
+
   createSeller: async (sellerData) => {
     const newSeller = await Wholeseller.create(sellerData);
     return newSeller;
@@ -287,12 +293,6 @@ const SellerListingFunctions = {
     await seller.save();
 
     return newListing;
-  },
-
-  searchSellersByBusinessName: async (partialName) => {
-    return await Wholeseller.find({
-      businessName: { $regex: partialName, $options: "i" },
-    });
   },
 
   updateListing: async (sellerId, listingId, listingData) => {
