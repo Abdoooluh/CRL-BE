@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const Affiliation = require('../models/affiliations');
 const Wholeseller = require("../models/sellers");
 const Retailer = require('../models/retailers'); 
+const Listings = require('../models/listings')
 
 
 const information = {
@@ -281,20 +282,21 @@ const SellerAPIFunctions = {
 
   deleteSeller: async (sellerId) => {
     const deletedSeller = await Wholeseller.findByIdAndDelete(sellerId);
+    Listings.deleteMany({sellerId})
     return deletedSeller;
   },
 };
 
 const SellerListingFunctions = {
   getAllListings: async (sellerId) => {
-    const seller = await Wholeseller.findById(sellerId);
-    if (!seller) throw new Error("Seller not found");
+    const listings = await Listings.find({sellerId});
+    if (!listings) throw new Error("Seller not found");
 
-    return seller.listings;
+    return listings;
   },
 
   getListingById: async (sellerId, listingId) => {
-    const seller = await Wholeseller.findById(sellerId);
+    const seller = await Listings.find({sellerId, listingId});
     if (!seller) throw new Error("Seller not found");
 
     const listing = seller.listings.id(listingId);
@@ -306,23 +308,22 @@ const SellerListingFunctions = {
   createListing: async (sellerId, listingData) => {
     const seller = await Wholeseller.findById(sellerId);
     if (!seller) throw new Error("Seller not found");
-
-    const newListing = new Listings(listingData);
-    seller.listings.push(newListing);
+    const newListing = await Listings.create(listingData);
+    seller.listings.push(newListing._id);
+    seller.totalListings += 1;
     await seller.save();
-
     return newListing;
-  },
+},
 
   updateListing: async (sellerId, listingId, listingData) => {
     const seller = await Wholeseller.findById(sellerId);
     if (!seller) throw new Error("Seller not found");
 
-    const listing = seller.listings.id(listingId);
+    const listing = await Listings.findById(listingId);
     if (!listing) throw new Error("Listing not found");
 
     Object.assign(listing, listingData);
-    await seller.save();
+    await Listings.save();
 
     return listing;
   },
@@ -330,15 +331,21 @@ const SellerListingFunctions = {
   deleteListing: async (sellerId, listingId) => {
     const seller = await Wholeseller.findById(sellerId);
     if (!seller) throw new Error("Seller not found");
-
-    const listing = seller.listings.id(listingId);
+  
+    const listing = await Listings.findByIdAndDelete(listingId);
     if (!listing) throw new Error("Listing not found");
-
-    listing.remove();
+  
+    const index = seller.listings.indexOf(listingId);
+    if (index > -1) {
+      seller.listings.splice(index, 1);
+      seller.totalListings = Math.max(0, seller.totalListings - 1);
+    }
+  
     await seller.save();
-
+  
     return listing;
-  },
+  }
+  
 };
 
 const sellerAPIs = { info: information, router: sellerRouter };
