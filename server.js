@@ -22,6 +22,7 @@ app.use("/sellers", sellerAPIs.router);
 app.use("/orders", orderAPIs.router);
 app.use("/mail", mailAPIs.router);
 
+APIinfo.push(affiliationAPIs.info)
 APIinfo.push(retailerAPIs.info);
 APIinfo.push(sellerAPIs.info);
 APIinfo.push(orderAPIs.info);
