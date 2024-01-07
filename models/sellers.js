@@ -2,6 +2,10 @@ const Listings = require("./listings");
 const mongoose = require("mongoose");
 
 const wholesellerSchema = mongoose.Schema({
+  businessName: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -16,14 +20,10 @@ const wholesellerSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter your NTN"],
   },
-  businessPhone: { 
-    type: String, 
-    required: true, 
-    unique: true 
-  },
-  businessAddress: { 
-    type: String, 
-    required: true 
+  businessPhone: {
+    type: String,
+    required: true,
+    unique: true,
   },
   platformJoiningDate: {
     type: Date,

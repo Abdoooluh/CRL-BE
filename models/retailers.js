@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const retailerSchema = mongoose.Schema({
+  businessName: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -19,10 +23,6 @@ const retailerSchema = mongoose.Schema({
     type: String, 
     required: true, 
     unique: true 
-  },
-  businessAddress: { 
-    type: String, 
-    required: true 
   },
   platformJoiningDate: {
     type: Date,
