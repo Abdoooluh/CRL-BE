@@ -13,6 +13,10 @@ const information = {
       desc: "Sign up as a seller",
     },
     {
+      route: "sellers/search/:name [GET]",
+      desc: "search sellers by business name",
+    },
+    {
       route: "sellers/get [GET]",
       desc: "get all sellers",
     },
@@ -62,11 +66,10 @@ sellerRouter.post(
   asyncHandler(async (req, res) => {
     const sellerData = req.body;
     const seller = await SellerAPIFunctions.createSeller(sellerData);
-    if(!seller){
-      res.status(404).json({error:"User Not Registered"})
-    }
-    else{
-      res.status(200).json(seller)
+    if (!seller) {
+      res.status(404).json({ error: "User Not Registered" });
+    } else {
+      res.status(200).json(seller);
     }
   })
 );
@@ -76,13 +79,25 @@ sellerRouter.post(
   asyncHandler(async (req, res) => {
     const sellerData = req.body;
     const seller = await SellerAPIFunctions.signIn(sellerData.email);
-    if(!seller){
-      res.status(404).json({error:"The User doesn't exist"})
-    }
-    else if(seller.password !== sellerData.password){
-      res.status(401).json({error:"The Username and the Password do not match"})
+    if (!seller) {
+      res.status(404).json({ error: "The User doesn't exist" });
+    } else if (seller.password !== sellerData.password) {
+      res
+        .status(401)
+        .json({ error: "The Username and the Password do not match" });
     }
     res.status(200).json(seller);
+  })
+);
+
+sellerRouter.get(
+  "/search/:name",
+  asyncHandler(async (req, res) => {
+    const partialName = req.params.name;
+    const sellers = await SellerAPIFunctions.searchSellersByBusinessName(
+      partialName
+    );
+    res.json(sellers);
   })
 );
 
@@ -211,7 +226,7 @@ sellerRouter.delete(
 
 const SellerAPIFunctions = {
   signIn: async (email) => {
-    const seller = await Wholeseller.findOne({email});
+    const seller = await Wholeseller.findOne({ email });
     return seller;
   },
 
@@ -272,6 +287,12 @@ const SellerListingFunctions = {
     await seller.save();
 
     return newListing;
+  },
+
+  searchSellersByBusinessName: async (partialName) => {
+    return await Wholeseller.find({
+      businessName: { $regex: partialName, $options: "i" },
+    });
   },
 
   updateListing: async (sellerId, listingId, listingData) => {
