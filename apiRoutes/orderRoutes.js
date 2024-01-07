@@ -150,6 +150,15 @@ const OrderAPIFunctions = {
   deleteOrder: async (orderId) => {
     return await Order.findByIdAndDelete(orderId);
   },
+
+  getOrdersBySellerId:async(sellerId)=>{
+    return await Order.find(sellerId)
+  },
+  
+  getOrdersByRetailerId:async(retailerId)=>{
+    return await Order.find(retailerId)
+
+  }
 };
 
 const orderAPIs = { info: information, router: orderRouter };

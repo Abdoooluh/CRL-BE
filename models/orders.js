@@ -4,7 +4,7 @@ const Seller = require("./sellers");
 
 const orderSchema = mongoose.Schema({
   orderNumber: {
-    type: String,
+    type: Number,
     required: [true, "Please provide the order number"],
     unique: true,
   },
@@ -13,10 +13,18 @@ const orderSchema = mongoose.Schema({
     ref: "Retailer",
     required: [true, "Please provide the retailer ID"],
   },
+  retailerContact:{
+    type: String, 
+    required: true, 
+    unique: true
+  },
   seller: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Seller",
     required: [true, "Please provide the seller ID"],
+  },
+  comments:{
+    type: String,
   },
   products: [
     {
@@ -49,9 +57,21 @@ const orderSchema = mongoose.Schema({
   },
   orderStatus: {
     type: String,
-    enum: ["Placed", "Fulfilled", "Cancelled"],
-    default: "Placed",
+    enum: ["pending", "accepted", "rejected", "completed"],
+    default: "pending",
   },
+});
+
+
+orderSchema.pre('save', function (next) {
+  var doc = this;
+  Order.countDocuments({}, function (err, count) {
+    if (err) {
+      return next(err);
+    }
+    doc.orderNumber = count + 1;
+    next();
+  });
 });
 
 const Order = mongoose.model("Order", orderSchema);
