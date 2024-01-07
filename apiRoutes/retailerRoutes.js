@@ -13,6 +13,10 @@ const information = {
       desc: "Sign up as a retailer",
     },
     {
+      route: "retailers/search/:name [GET]",
+      desc: "search retailers by business name",
+    },
+    {
       route: "retailers/get [GET]",
       desc: "get all retailers",
     },
@@ -64,6 +68,17 @@ retailerRouter.post(
       res.status(401).json({error:"The Username and the Password do not match"})
     }
     res.status(200).json(retailer);
+  })
+);
+
+retailerRouter.get(
+  "/search/:name",
+  asyncHandler(async (req, res) => {
+    const partialName = req.params.name;
+    const retailers = await RetailerAPIFunctions.searchRetailersByBusinessName(
+      partialName
+    );
+    res.json(retailers);
   })
 );
 
@@ -142,6 +157,12 @@ const RetailerAPIFunctions = {
   getAllRetailers: async () => {
     const retailers = await Retailer.find();
     return retailers;
+  },
+
+  searchRetailersByBusinessName: async (partialName) => {
+    return await Retailer.find({
+      businessName: { $regex: partialName, $options: "i" },
+    });
   },
 
   getRetailerById: async (retailerId) => {
