@@ -85,6 +85,7 @@ sellerRouter.post(
   "/signIn",
   asyncHandler(async (req, res) => {
     const sellerData = req.body;
+    console.log(req.body);
     const seller = await SellerAPIFunctions.signIn(sellerData.email);
     if (!seller) {
       res.status(404).json({ error: "The User doesn't exist" });

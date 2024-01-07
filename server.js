@@ -13,14 +13,14 @@ const BASE_URL = "http://localhost:8000/";
 const app = express();
 const APIinfo = [];
 
+app.use(express.json());
+app.use(cors());
 
 app.use("/affiliations", affiliationAPIs.router)
 app.use("/retailers", retailerAPIs.router);
 app.use("/sellers", sellerAPIs.router);
 app.use("/orders", orderAPIs.router);
 app.use("/mail", mailAPIs.router);
-app.use(express.json());
-app.use(cors());
 
 APIinfo.push(retailerAPIs.info);
 APIinfo.push(sellerAPIs.info);
@@ -42,7 +42,6 @@ try {
 }
 
 app.get("/", function (req, res) {
-  console.log("get api called")
   for (section of APIinfo) {
     for (api in section) {
       for (entry of section[api]) {
