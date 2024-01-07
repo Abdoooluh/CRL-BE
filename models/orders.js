@@ -13,6 +13,10 @@ const orderSchema = mongoose.Schema({
     ref: "Retailer",
     required: [true, "Please provide the retailer ID"],
   },
+  retailerName:{
+    type: String,
+    required: true,
+  },
   retailerContact:{
     type: String, 
     required: true, 
