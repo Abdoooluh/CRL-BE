@@ -41,7 +41,7 @@ const wholesellerSchema = mongoose.Schema({
   outstandingBalance: {
     type: Number,
     default: 0,
-  },
+  }
 });
 
 module.exports = mongoose.model("Wholeseller", wholesellerSchema);

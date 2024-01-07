@@ -1,22 +1,26 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const axios = require("axios");
+
+const affiliationAPIs = require("./apiRoutes/affiliationsRouter");
 const retailerAPIs = require("./apiRoutes/retailerRoutes");
 const sellerAPIs = require("./apiRoutes/sellerRoutes");
 const orderAPIs = require("./apiRoutes/orderRoutes");
 const mailAPIs = require("./apiRoutes/mailerRoutes");
+const mongoose = require("mongoose");
+const express = require("express");
+const axios = require("axios");
 const cors = require("cors");
 
 const BASE_URL = "http://localhost:8000/";
+const app = express();
 const APIinfo = [];
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+
+app.use("/affiliations", affiliationAPIs.router)
 app.use("/retailers", retailerAPIs.router);
 app.use("/sellers", sellerAPIs.router);
 app.use("/orders", orderAPIs.router);
 app.use("/mail", mailAPIs.router);
+app.use(express.json());
+app.use(cors());
 
 APIinfo.push(retailerAPIs.info);
 APIinfo.push(sellerAPIs.info);

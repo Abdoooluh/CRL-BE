@@ -1,6 +1,9 @@
 const express = require("express");
 const asyncHandler = require("express-async-handler");
+const Affiliation = require('../models/affiliations');
 const Wholeseller = require("../models/sellers");
+const Retailer = require('../models/retailers'); 
+
 
 const information = {
   sellers: [
@@ -8,6 +11,10 @@ const information = {
       route: "sellers/signIn [POST]",
       desc: "Sign in as a seller",
     },
+    {
+      route: "sellers/affiliatedRetailers/:sellerId [GET]",
+      desc: "Fetch detailed information of all retailers affiliated with a specific seller, excluding their passwords. The seller ID is passed as a parameter in the URL."
+    },    
     {
       route: "sellers/signUp [POST]",
       desc: "Sign up as a seller",
@@ -89,6 +96,17 @@ sellerRouter.post(
     res.status(200).json(seller);
   })
 );
+
+sellerRouter.get('/sellers/affiliatedRetailers/:sellerId', asyncHandler(async (req, res) => {
+  const sellerId = req.params.sellerId;
+  
+  const affiliations = await Affiliation.find({ sellerId: sellerId }).select('retailerId -_id');
+  const retailerIds = affiliations.map(affiliation => affiliation.retailerId);
+
+  const retailers = await Retailer.find({ _id: { $in: retailerIds } }).select('-password');
+  res.json(retailers);
+}));
+
 
 sellerRouter.get(
   "/search/:name",
