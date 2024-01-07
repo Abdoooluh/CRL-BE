@@ -98,7 +98,7 @@ sellerRouter.post(
   })
 );
 
-sellerRouter.get('/sellers/affiliatedRetailers/:sellerId', asyncHandler(async (req, res) => {
+sellerRouter.get('/affiliatedRetailers/:sellerId', asyncHandler(async (req, res) => {
   const sellerId = req.params.sellerId;
   
   const affiliations = await Affiliation.find({ sellerId: sellerId }).select('retailerId -_id');
