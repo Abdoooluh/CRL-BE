@@ -6,8 +6,7 @@
     "express-async-handler": "^1.2.0",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.3",
-    "nodemailer": "^6.9.8",
-    "nodemon": "^3.0.2"
+    "nodemailer": "^6.9.8"
   },
   "scripts": {
     "start": "node server.js",
@@ -18,5 +17,8 @@
   "description": "Fyp back end",
   "main": "server.js",
   "author": "Abdi",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
 }
