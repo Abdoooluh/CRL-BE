@@ -4,7 +4,7 @@ const Affiliation = require("../models/affiliations");
 const Wholeseller = require("../models/sellers");
 const Retailer = require("../models/retailers");
 const Listings = require("../models/listings");
-
+const cloudinary = require("../cloudinary");
 const information = {
   sellers: [
     {
@@ -258,6 +258,7 @@ sellerRouter.put(
         return cloudinaryUrl;
       })
     );
+    console.log("updatedImages", updatedImages);
     listingData.images = updatedImages;
     const updatedListing = await SellerListingFunctions.updateListing(
       sellerId,
