@@ -5,6 +5,7 @@ const sellerAPIs = require("./apiRoutes/sellerRoutes");
 const orderAPIs = require("./apiRoutes/orderRoutes");
 const mailAPIs = require("./apiRoutes/mailerRoutes");
 const cartAPIs = require('./apiRoutes/cartRouter')
+const bodyParser = require('body-parser')
 const mongoose = require("mongoose");
 const express = require("express");
 const axios = require("axios");
@@ -14,6 +15,7 @@ const BASE_URL = "http://localhost:8000/";
 const app = express();
 const APIinfo = [];
 
+app.use(bodyParser.json({ limit: '5mb'}))
 app.use(express.json());
 app.use(cors());
 
