@@ -1,10 +1,9 @@
 const express = require("express");
 const asyncHandler = require("express-async-handler");
-const Affiliation = require('../models/affiliations');
+const Affiliation = require("../models/affiliations");
 const Wholeseller = require("../models/sellers");
-const Retailer = require('../models/retailers'); 
-const Listings = require('../models/listings')
-
+const Retailer = require("../models/retailers");
+const Listings = require("../models/listings");
 
 const information = {
   sellers: [
@@ -14,8 +13,8 @@ const information = {
     },
     {
       route: "sellers/affiliatedRetailers/:sellerId [GET]",
-      desc: "Fetch detailed information of all retailers affiliated with a specific seller, excluding their passwords. The seller ID is passed as a parameter in the URL."
-    },    
+      desc: "Fetch detailed information of all retailers affiliated with a specific seller, excluding their passwords. The seller ID is passed as a parameter in the URL.",
+    },
     {
       route: "sellers/signUp [POST]",
       desc: "Sign up as a seller",
@@ -99,16 +98,24 @@ sellerRouter.post(
   })
 );
 
-sellerRouter.get('/affiliatedRetailers/:sellerId', asyncHandler(async (req, res) => {
-  const sellerId = req.params.sellerId;
-  
-  const affiliations = await Affiliation.find({ sellerId: sellerId }).select('retailerId -_id');
-  const retailerIds = affiliations.map(affiliation => affiliation.retailerId);
+sellerRouter.get(
+  "/affiliatedRetailers/:sellerId",
+  asyncHandler(async (req, res) => {
+    const sellerId = req.params.sellerId;
 
-  const retailers = await Retailer.find({ _id: { $in: retailerIds } }).select('-password');
-  res.json(retailers);
-}));
+    const affiliations = await Affiliation.find({ sellerId: sellerId }).select(
+      "retailerId -_id"
+    );
+    const retailerIds = affiliations.map(
+      (affiliation) => affiliation.retailerId
+    );
 
+    const retailers = await Retailer.find({ _id: { $in: retailerIds } }).select(
+      "-password"
+    );
+    res.json(retailers);
+  })
+);
 
 sellerRouter.get(
   "/search/:name",
@@ -210,6 +217,13 @@ sellerRouter.post(
   asyncHandler(async (req, res) => {
     const sellerId = req.params.sellerId;
     const listingData = req.body;
+    const updatedImages = await Promise.all(
+      listingData.images.map(async (image) => {
+        const cloudinaryUrl = await uploadImageToCloudinary(image);
+        return cloudinaryUrl;
+      })
+    );
+    listingData.images = updatedImages;
     const newListing = await SellerListingFunctions.createListing(
       sellerId,
       listingData
@@ -223,6 +237,13 @@ sellerRouter.put(
   asyncHandler(async (req, res) => {
     const { sellerId, listingId } = req.params;
     const listingData = req.body;
+    const updatedImages = await Promise.all(
+      listingData.images.map(async (image) => {
+        const cloudinaryUrl = await uploadImageToCloudinary(image);
+        return cloudinaryUrl;
+      })
+    );
+    listingData.images = updatedImages;
     const updatedListing = await SellerListingFunctions.updateListing(
       sellerId,
       listingId,
@@ -282,21 +303,21 @@ const SellerAPIFunctions = {
 
   deleteSeller: async (sellerId) => {
     const deletedSeller = await Wholeseller.findByIdAndDelete(sellerId);
-    Listings.deleteMany({sellerId})
+    Listings.deleteMany({ sellerId });
     return deletedSeller;
   },
 };
 
 const SellerListingFunctions = {
   getAllListings: async (sellerId) => {
-    const listings = await Listings.find({sellerId});
+    const listings = await Listings.find({ sellerId });
     if (!listings) throw new Error("Seller not found");
 
     return listings;
   },
 
   getListingById: async (sellerId, listingId) => {
-    const seller = await Listings.find({sellerId, listingId});
+    const seller = await Listings.find({ sellerId, listingId });
     if (!seller) throw new Error("Seller not found");
 
     const listing = seller.listings.id(listingId);
@@ -313,7 +334,7 @@ const SellerListingFunctions = {
     seller.totalListings += 1;
     await seller.save();
     return newListing;
-},
+  },
 
   updateListing: async (sellerId, listingId, listingData) => {
     const seller = await Wholeseller.findById(sellerId);
@@ -331,21 +352,34 @@ const SellerListingFunctions = {
   deleteListing: async (sellerId, listingId) => {
     const seller = await Wholeseller.findById(sellerId);
     if (!seller) throw new Error("Seller not found");
-  
+
     const listing = await Listings.findByIdAndDelete(listingId);
     if (!listing) throw new Error("Listing not found");
-  
+
     const index = seller.listings.indexOf(listingId);
     if (index > -1) {
       seller.listings.splice(index, 1);
       seller.totalListings = Math.max(0, seller.totalListings - 1);
     }
-  
+
     await seller.save();
-  
+
     return listing;
+  },
+};
+
+
+const uploadImageToCloudinary = async (imageData) => {
+  try {
+    const result = await cloudinary.uploader.upload(imageData, {
+      folder: 'ListingImgs', 
+      transformation: [{ width: 300, height: 300, crop: 'limit' }],
+    });
+
+    return result.secure_url; 
+  } catch (error) {
+    throw new Error('Error uploading image to Cloudinary');
   }
-  
 };
 
 const sellerAPIs = { info: information, router: sellerRouter };
