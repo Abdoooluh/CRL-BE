@@ -13,15 +13,21 @@ const listingSchema = mongoose.Schema({
   },
   description: String,
   price: {
-    type: Number,
-    required: [true, "Please enter a price"]
+    type: [Number], 
+    validate: {
+      validator: function (prices) {
+        return prices.length <= 6;
+      },
+      message: "Price array can have a maximum of 6 numbers",
+    },
+    required: [true, "Please provide the price"],
   },
   minimumOrderQuantity: {
     type: Number,
     required: [true, "Please enter minimum order quantity for this product"]
   },
   images: [{
-    type: String, // Cloudinary image URL
+    type: String,
   }],
 });
 

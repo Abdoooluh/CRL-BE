@@ -350,10 +350,18 @@ const SellerListingFunctions = {
   createListing: async (sellerId, listingData) => {
     const seller = await Wholeseller.findById(sellerId);
     if (!seller) throw new Error("Seller not found");
-    const newListing = await Listings.create(listingData);
+
+    const prices = validateAndFormatPrices(listingData.price);
+
+    const newListing = await Listings.create({
+      ...listingData,
+      price: prices,
+    });
+
     seller.listings.push(newListing._id);
     seller.totalListings += 1;
     await seller.save();
+
     return newListing;
   },
 
@@ -364,8 +372,10 @@ const SellerListingFunctions = {
     const listing = await Listings.findById(listingId);
     if (!listing) throw new Error("Listing not found");
 
-    Object.assign(listing, listingData);
-    await Listings.save();
+    const prices = validateAndFormatPrices(listingData.price);
+
+    Object.assign(listing, { ...listingData, price: prices });
+    await listing.save();
 
     return listing;
   },
@@ -389,18 +399,30 @@ const SellerListingFunctions = {
   },
 };
 
-
 const uploadImageToCloudinary = async (imageData) => {
   try {
     const result = await cloudinary.uploader.upload(imageData, {
-      folder: 'ListingImgs', 
-      transformation: [{ width: 300, height: 300, crop: 'limit' }],
+      folder: "ListingImgs",
+      transformation: [{ width: 300, height: 300, crop: "limit" }],
     });
 
-    return result.secure_url; 
+    return result.secure_url;
   } catch (error) {
-    throw new Error('Error uploading image to Cloudinary');
+    throw new Error("Error uploading image to Cloudinary");
   }
+};
+
+const validateAndFormatPrices = (prices) => {
+  if (!Array.isArray(prices)) {
+    throw new Error("Price must be an array");
+  }
+
+  if (prices.length > 6) {
+    throw new Error("Price array can have a maximum of 6 numbers");
+  }
+
+
+  return prices;
 };
 
 const sellerAPIs = { info: information, router: sellerRouter };
