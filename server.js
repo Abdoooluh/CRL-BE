@@ -4,6 +4,7 @@ const retailerAPIs = require("./apiRoutes/retailerRoutes");
 const sellerAPIs = require("./apiRoutes/sellerRoutes");
 const orderAPIs = require("./apiRoutes/orderRoutes");
 const mailAPIs = require("./apiRoutes/mailerRoutes");
+const cartAPIs = require('./apiRoutes/cartRouter')
 const mongoose = require("mongoose");
 const express = require("express");
 const axios = require("axios");
@@ -21,12 +22,14 @@ app.use("/retailers", retailerAPIs.router);
 app.use("/sellers", sellerAPIs.router);
 app.use("/orders", orderAPIs.router);
 app.use("/mail", mailAPIs.router);
+app.use("/cart", cartAPIs.router)
 
 APIinfo.push(affiliationAPIs.info)
 APIinfo.push(retailerAPIs.info);
 APIinfo.push(sellerAPIs.info);
 APIinfo.push(orderAPIs.info);
 APIinfo.push(mailAPIs.info);
+APIinfo.push(cartAPIs.info)
 
 app.listen(8000);
 
