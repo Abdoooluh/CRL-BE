@@ -48,6 +48,10 @@ const information = {
       desc: "get all listings for a specific seller",
     },
     {
+      route: "sellers/listings/get/:listingId [GET]",
+      desc: "get details of a specific listing by ID",
+    },
+    {
       route: "sellers/listings/get/:sellerId/:listingId [GET]",
       desc: "get a specific listing for a specific seller",
     },
@@ -192,6 +196,17 @@ sellerRouter.delete(
 );
 
 sellerRouter.get(
+  "/listings/get/:listingId",
+  asyncHandler(async (req, res) => {
+    const { listingId } = req.params;
+    const listingDetails = await SellerListingFunctions.getListingDetailsById(
+      listingId
+    );
+    res.json(listingDetails);
+  })
+);
+
+sellerRouter.get(
   "/listings/get/:sellerId",
   asyncHandler(async (req, res) => {
     const sellerId = req.params.sellerId;
@@ -314,6 +329,12 @@ const SellerListingFunctions = {
     if (!listings) throw new Error("Seller not found");
 
     return listings;
+  },
+
+  getListingDetailsById: async (listingId) => {
+    const listing = await Listings.findById(listingId);
+    if (!listing) throw new Error("Listing not found");
+    return listing;
   },
 
   getListingById: async (sellerId, listingId) => {
