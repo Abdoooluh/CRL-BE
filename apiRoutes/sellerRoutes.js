@@ -4,6 +4,7 @@ const Affiliation = require("../models/affiliations");
 const Wholeseller = require("../models/sellers");
 const Retailer = require("../models/retailers");
 const Listings = require("../models/listings");
+const cloudinary = require('cloudinary')
 
 const information = {
   sellers: [
@@ -44,7 +45,7 @@ const information = {
       desc: "delete a seller by ID",
     },
     {
-      route: "sellers/listings/get/:sellerId [GET]",
+      route: "sellers/listings/getbyseller/:sellerId [GET]",
       desc: "get all listings for a specific seller",
     },
     {
@@ -207,7 +208,7 @@ sellerRouter.get(
 );
 
 sellerRouter.get(
-  "/listings/get/:sellerId",
+  "/listings/getbyseller/:sellerId",
   asyncHandler(async (req, res) => {
     const sellerId = req.params.sellerId;
     const listings = await SellerListingFunctions.getAllListings(sellerId);
