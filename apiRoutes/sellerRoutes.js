@@ -220,7 +220,7 @@ sellerRouter.get(
 );
 
 sellerRouter.get(
-  "listings/getAll",
+  "/listings/getAll",
   asyncHandler(async (req, res) => {
     const allListings = await SellerListingFunctions.getAllTheListings();
     res.json(allListings);
