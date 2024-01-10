@@ -220,9 +220,9 @@ sellerRouter.get(
 );
 
 sellerRouter.get(
-  "/getAll",
+  "listings/getAll",
   asyncHandler(async (req, res) => {
-    const allListings = await SellerListingFunctions.getAllListings();
+    const allListings = await SellerListingFunctions.getAllTheListings();
     res.json(allListings);
   })
 );
@@ -344,7 +344,7 @@ const SellerListingFunctions = {
     return listings;
   },
 
-  getAllListings: async () => {
+  getAllTheListings: async () => {
     const allListings = await Listings.find();
     return allListings;
   },
