@@ -44,6 +44,10 @@ const information = {
       desc: "delete a seller by ID",
     },
     {
+      route: "sellers/listings/getAll [GET]",
+      desc: "Get all product listings",
+    },
+    {
       route: "sellers/listings/getbyseller/:sellerId [GET]",
       desc: "get all listings for a specific seller",
     },
@@ -216,6 +220,14 @@ sellerRouter.get(
 );
 
 sellerRouter.get(
+  "/getAll",
+  asyncHandler(async (req, res) => {
+    const allListings = await SellerListingFunctions.getAllListings();
+    res.json(allListings);
+  })
+);
+
+sellerRouter.get(
   "/listings/get/:sellerId/:listingId",
   asyncHandler(async (req, res) => {
     const { sellerId, listingId } = req.params;
@@ -330,6 +342,11 @@ const SellerListingFunctions = {
     if (!listings) throw new Error("Seller not found");
 
     return listings;
+  },
+
+  getAllListings: async () => {
+    const allListings = await Listings.find();
+    return allListings;
   },
 
   getListingDetailsById: async (listingId) => {
